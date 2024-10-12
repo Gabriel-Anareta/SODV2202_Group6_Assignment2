@@ -2,11 +2,11 @@
 {
     static public class PlayerData
     {
-        static public List<string> AllData = GetData(@"NHL Player Stats 2017-18.csv");
+        static public List<Player> AllData = GetData(@"NHL Player Stats 2017-18.csv");
 
-        static public List<string> GetData(string path)
+        static public List<Player> GetData(string path)
         {
-            List<string> data = new List<string>();
+            List<Player> data = new List<Player>();
             string csvPath = Path.Combine(Environment.CurrentDirectory, path);
 
             if (File.Exists(csvPath))
@@ -15,9 +15,22 @@
                 {
                     using (StreamReader reader = new StreamReader(csvPath))
                     {
+                        int count = 0;
                         while (!reader.EndOfStream)
                         {
-                            data.Add(reader.ReadLine());
+                            string line = reader.ReadLine();
+
+                            if (count == 0)
+                                continue;
+
+                            List<string> cells = line == null ? 
+                                new List<string>() : 
+                                line.Split(",").ToList();
+
+                            if (cells.Count > 0)
+                                data.Add(new Player(cells));
+
+                            count++;
                         }
                     }
                 }

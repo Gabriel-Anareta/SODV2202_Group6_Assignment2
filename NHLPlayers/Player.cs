@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace NHLPlayers
 {
-    internal class Player
+    public class Player
     {
         public string Name { get; set; }
         public string Team { get; set; }
