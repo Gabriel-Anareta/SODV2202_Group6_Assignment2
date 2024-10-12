@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ namespace NHLPlayers
         public string S_Perc { get; set; }      // S% changed to S_Perc
         public string TOI_GP { get; set; }      // TOI/GP changed to TOI_GP
         public string Shifts_GP { get; set; }   // Shifts/GP changed to Shifts_GP
-        public string FOW_Perc { get; set;  }   // FOW% changed to FOW_Perc 
+        public string FOW_Perc { get; set; }   // FOW% changed to FOW_Perc 
 
         public Player(List<string> data)
         {
@@ -42,6 +43,31 @@ namespace NHLPlayers
             PTS = data[6];      SHP = data[13];         FOW_Perc = data[20]; 
         }
 
-        
+        public override string ToString()
+        {
+            return (
+                $"Name: {Name}" +
+                $"Team: {Team}\n" +
+                $"Pos: {Pos}\n" +
+                $"GP: {GP}\n" +
+                $"G: {G}\n" +
+                $"A: {A}\n" +
+                $"PTS: {PTS}\n" +
+                $"Plus_Minus: {Plus_Minus}\n" +
+                $"PIM: {PIM}\n" +
+                $"P_GP: {P_GP}\n" +
+                $"PPG: {PPG}\n" +
+                $"PPP: {PPP}\n" +
+                $"SHG: {SHG}\n" +
+                $"SHP: {SHP}\n" +
+                $"GWG: {GWG}\n" +
+                $"OTG: {OTG}\n" +
+                $"SOG: {SOG}\n" +
+                $"S_Perc: {S_Perc}\n" +
+                $"TOI_GP: {TOI_GP}\n" +
+                $"Shifts_GP: {Shifts_GP}\n" +
+                $"FOW_Perc: { FOW_Perc }"
+            );
+        }
     }
 }

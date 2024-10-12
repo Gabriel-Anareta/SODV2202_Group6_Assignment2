@@ -18,10 +18,14 @@
                         int count = 0;
                         while (!reader.EndOfStream)
                         {
-                            string line = reader.ReadLine();
+                            string? line = reader.ReadLine();
 
                             if (count == 0)
+                            {
+                                count++;
                                 continue;
+                            }
+                                
 
                             List<string> cells = line == null ? 
                                 new List<string>() : 
