@@ -31,22 +31,17 @@ namespace NHLPlayers
         public string Shifts_GP { get; set; }   // Shifts/GP changed to Shifts_GP
         public string FOW_Perc { get; set;  }   // FOW% changed to FOW_Perc 
 
-        public Player(
-            string _Name,           string _Plus_Minus,         string _GWG,
-            string _Team,           string _PIM,                string _OTG,
-            string _Pos,            string _P_GP,               string _SOG,
-            string _GP,             string _PPG,                string _S_Perc,
-            string _G,              string _PPP,                string _TOI_GP,
-            string _A,              string _SHG,                string _Shifts_GP,
-            string _PTS,            string _SHP,                string _FOW_Perc)
+        public Player(List<string> data)
         {
-            Name = _Name;           Plus_Minus = _Plus_Minus;   GWG = _GWG;
-            Team = _Team;           PIM = _PIM;                 OTG = _OTG;
-            Pos = _Pos;             P_GP = _P_GP;               SOG = _SOG;      
-            GP = _GP;               PPG = _PPG;                 S_Perc = _S_Perc;   
-            G = _G;                 PPP = _PPP;                 TOI_GP = _TOI_GP;   
-            A = _A;                 SHG = _SHG;                 Shifts_GP = _Shifts_GP;
-            PTS = _PTS;             SHP = _SHP;                 FOW_Perc = _FOW_Perc; 
+            Name = data[0];     Plus_Minus = data[7];   GWG = data[14];
+            Team = data[1];     PIM = data[8];          OTG = data[15];
+            Pos = data[2];      P_GP = data[9];         SOG = data[16];      
+            GP = data[3];       PPG = data[10];         S_Perc = data[17];   
+            G = data[4];        PPP = data[11];         TOI_GP = data[18];   
+            A = data[5];        SHG = data[12];         Shifts_GP = data[19];
+            PTS = data[6];      SHP = data[13];         FOW_Perc = data[20]; 
         }
+
+        
     }
 }
