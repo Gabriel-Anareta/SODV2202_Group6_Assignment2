@@ -20,5 +20,12 @@ namespace NHLPlayers
 
             return filter.Matches(input);
         }
+
+        public static Match GetProp(string input)
+        {
+            Regex filter = new Regex(@"^(\w|[+\-/%])+", RegexOptions.Compiled);
+
+            return filter.Match(input);
+        }
     }
 }
