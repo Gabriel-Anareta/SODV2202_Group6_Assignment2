@@ -9,6 +9,20 @@ namespace NHLPlayers
 {
     public static class QueryManager
     {
+        public static bool RunFilters(MatchCollection rawfilters, Object obj)
+        {
+            List<Func<bool>> filters = CreateFilter(rawfilters, obj);
+
+            bool state = true;
+
+            foreach (Func<bool> filter in filters)
+            {
+                state = state && filter();
+            }
+
+            return state;
+        }
+        
         private static List<Func<bool>> CreateFilter(MatchCollection rawfilters, Object obj)
         {
             List<Func<bool>> filters = new List<Func<bool>>();
