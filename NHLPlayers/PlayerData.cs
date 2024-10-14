@@ -1,4 +1,6 @@
-﻿namespace NHLPlayers
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace NHLPlayers
 {
     static public class PlayerData
     {

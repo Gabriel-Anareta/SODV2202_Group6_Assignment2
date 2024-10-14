@@ -15,10 +15,10 @@ namespace NHLPlayers
             PropertyInfo[] props = type.GetProperties();
 
             if (type.GetProperty(prop) == null)
-                return new { value = "invalid" };
+                return new { value = "invalid property" };
 
             if (!props.Contains(type.GetProperty(prop)))
-                return new { value = "invalid" }; ;
+                return new { value = "invalid property" };
 
             return new { value = type.GetProperty(prop).GetValue(obj) };
         }

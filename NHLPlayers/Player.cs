@@ -1,12 +1,4 @@
-﻿using Microsoft.VisualBasic.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.Reflection;
 
 namespace NHLPlayers
 {
@@ -37,6 +29,7 @@ namespace NHLPlayers
         public Player(List<string> data)
         {
             PropertyInfo[] props = this.GetType().GetProperties();
+
             for (int i = 0; i < props.Length; i++)
             {
                 SetValue(props, data, i);
@@ -45,25 +38,21 @@ namespace NHLPlayers
 
         private void SetValue(PropertyInfo[] props, List<string> data, int i)
         {
-            if (i <= 2)
+            switch(i)
             {
-                props[i].SetValue(this, data[i]);
-                return;
+                case 0: case 1: case 2:
+                    props[i].SetValue(this, data[i]);
+                    break;
+                case 9: case 17: case 19: case 20:
+                    props[i].SetValue(this, double.Parse(data[i]));
+                    break;
+                case 18:
+                    props[i].SetValue(this, new CustomTime(data[i]));
+                    break;
+                default: 
+                    props[i].SetValue(this, int.Parse(data[i]));
+                    break;
             }
-
-            if (i == 9 || i == 17 || i == 19 || i == 20)
-            {
-                props[i].SetValue(this, double.Parse(data[i]));
-                return;
-            }
-
-            if (i == 18)
-            {
-                props[i].SetValue(this, new CustomTime(data[18]));
-                return;
-            }
-
-            props[i].SetValue(this, int.Parse(data[i]));
         }
         
         public override string ToString()
