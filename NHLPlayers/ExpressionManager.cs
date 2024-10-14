@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -9,10 +10,10 @@ namespace NHLPlayers
 {
     public static class ExpressionManager
     {
-        // @"(\w|[+\-/%])+[<>=]{1,2}(\w|[\-\.])+"       :   full ex
-        // @"^(\w|[+\-/%])+"                            :   prop
-        // @"[<>=]{1,2}"                                :   op
-        // @"(\w|[\-\.])+$"                             :   arg
+        // @"(\w|[+\-/%])+\s*[<>=]{1,2}\s*(\w|\s|[\-\.])+[^,]"      :   full ex
+        // @"^(\w|[+\-/%])+"                                        :   prop
+        // @"[<>=]{1,2}"                                            :   op
+        // @"(\w|\s|[\-\.])+$"                                      :   arg
 
         public static MatchCollection GetMatches(string input, string filter)
         {
