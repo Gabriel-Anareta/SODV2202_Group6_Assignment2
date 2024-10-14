@@ -64,7 +64,7 @@ namespace NHLPlayers
                 $"OTG: {OTG}\n" +
                 $"SOG: {SOG}\n" +
                 $"S_Perc: {S_Perc}\n" +
-                $"TOI_GP: {TOI_GP}\n" +
+                $"TOI_GP: {TOI_GP.ToString()}\n" +
                 $"Shifts_GP: {Shifts_GP}\n" +
                 $"FOW_Perc: {FOW_Perc}"
             );
