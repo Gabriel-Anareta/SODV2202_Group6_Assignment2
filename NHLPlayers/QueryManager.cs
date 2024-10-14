@@ -9,23 +9,9 @@ namespace NHLPlayers
 {
     public static class QueryManager
     {
-        public static bool RunFilters(MatchCollection rawfilters, Object obj)
+        private static bool RunFilters(MatchCollection rawfilters, Object obj)
         {
-            List<Func<bool>> filters = CreateFilter(rawfilters, obj);
-
             bool state = true;
-
-            foreach (Func<bool> filter in filters)
-            {
-                state = state && filter();
-            }
-
-            return state;
-        }
-        
-        private static List<Func<bool>> CreateFilter(MatchCollection rawfilters, Object obj)
-        {
-            List<Func<bool>> filters = new List<Func<bool>>();
 
             foreach (Match filter in rawfilters)
             {
@@ -50,29 +36,28 @@ namespace NHLPlayers
                     (propVal is string || exp is string)
                 ) continue;
 
-
                 // dynamic type used to bypass compiler error when comparing two objects
                 switch(op)
                 {
                     case "<":
-                        filters.Add(() => propVal < exp);
+                        state = state && (propVal < exp);
                         break;
                     case ">":
-                        filters.Add(() => propVal > exp);
+                        state = state && (propVal > exp);
                         break;
                     case "<=": case "=<":
-                        filters.Add(() => propVal <= exp);
+                        state = state && (propVal <= exp);
                         break;
                     case ">=": case "=>":
-                        filters.Add(() => propVal >= exp);
+                        state = state && (propVal >= exp);
                         break;
                     case "==":
-                        filters.Add(() => propVal == exp);
+                        state = state && (propVal == exp);
                         break;
                 }  
             }
 
-            return filters;
+            return state;
         }
     }
 }
