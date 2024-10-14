@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NHLPlayers
 {
@@ -34,40 +36,47 @@ namespace NHLPlayers
 
         public Player(List<string> data)
         {
-            Name = data[0];             Plus_Minus = int.Parse(data[7]);    GWG = int.Parse(data[14]);
-            Team = data[1];             PIM = int.Parse(data[8]);           OTG = int.Parse(data[15]);
-            Pos = data[2];              P_GP = double.Parse(data[9]);       SOG = int.Parse(data[16]);
-            GP = int.Parse(data[3]);    PPG = int.Parse(data[10]);          S_Perc = double.Parse(data[17]);
-            G = int.Parse(data[4]);     PPP = int.Parse(data[11]);          TOI_GP = new CustomTime(data[18]);
-            A = int.Parse(data[5]);     SHG = int.Parse(data[12]);          Shifts_GP = double.Parse(data[19]);
-            PTS = int.Parse(data[6]);   SHP = int.Parse(data[13]);          FOW_Perc = double.Parse(data[20]);
+            PropertyInfo[] props = this.GetType().GetProperties();
+            for (int i = 0; i < props.Length; i++)
+            {
+                SetValue(props, data, i);
+            }
+        }
+
+        private void SetValue(PropertyInfo[] props, List<string> data, int i)
+        {
+            if (i <= 2)
+            {
+                props[i].SetValue(this, data[i]);
+                return;
+            }
+
+            if (i == 9 || i == 17 || i == 19 || i == 20)
+            {
+                props[i].SetValue(this, double.Parse(data[i]));
+                return;
+            }
+
+            if (i == 18)
+            {
+                props[i].SetValue(this, new CustomTime(data[18]));
+                return;
+            }
+
+            props[i].SetValue(this, int.Parse(data[i]));
         }
         
         public override string ToString()
         {
-            return (
-                $"Name: {Name}" +
-                $"Team: {Team}\n" +
-                $"Pos: {Pos}\n" +
-                $"GP: {GP}\n" +
-                $"G: {G}\n" +
-                $"A: {A}\n" +
-                $"PTS: {PTS}\n" +
-                $"Plus_Minus: {Plus_Minus}\n" +
-                $"PIM: {PIM}\n" +
-                $"P_GP: {P_GP}\n" +
-                $"PPG: {PPG}\n" +
-                $"PPP: {PPP}\n" +
-                $"SHG: {SHG}\n" +
-                $"SHP: {SHP}\n" +
-                $"GWG: {GWG}\n" +
-                $"OTG: {OTG}\n" +
-                $"SOG: {SOG}\n" +
-                $"S_Perc: {S_Perc}\n" +
-                $"TOI_GP: {TOI_GP.ToString()}\n" +
-                $"Shifts_GP: {Shifts_GP}\n" +
-                $"FOW_Perc: {FOW_Perc}"
-            );
+            string propsString = "";
+            PropertyInfo[] props = this.GetType().GetProperties();
+
+            foreach (PropertyInfo prop in props)
+            {
+                propsString += $"{prop.Name}: {prop.GetValue(this)}\n";
+            }
+
+            return propsString;
         }
     }
 }
