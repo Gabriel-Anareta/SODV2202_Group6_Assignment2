@@ -9,23 +9,23 @@ namespace NHLPlayers
 {
     public static class ExpressionManager
     {
-        // (\w|[+\-/%])+[<>=]{1,2}(\w|[\-\.])+      :   full ex
-        // ^(\w|[+\-/%])+                           :   prop
-        // [<>=]{1,2}                               :   op
-        // (\w|[\-\.])+$                            :   arg
+        // @"(\w|[+\-/%])+[<>=]{1,2}(\w|[\-\.])+"       :   full ex
+        // @"^(\w|[+\-/%])+"                            :   prop
+        // @"[<>=]{1,2}"                                :   op
+        // @"(\w|[\-\.])+$"                             :   arg
 
-        public static MatchCollection GetExpressions(string input)
+        public static MatchCollection GetMatches(string input, string filter)
         {
-            Regex filter = new Regex(@"(\w|[+\-/%])+[<>=]{1,2}(\w|[\-\.])+", RegexOptions.Compiled);
+            Regex regex = new Regex(filter, RegexOptions.Compiled);
 
-            return filter.Matches(input);
+            return regex.Matches(input);
         }
 
-        public static Match GetProp(string input)
+        public static Match GetMatch(string input, string filter)
         {
-            Regex filter = new Regex(@"^(\w|[+\-/%])+", RegexOptions.Compiled);
+            Regex regex = new Regex(filter, RegexOptions.Compiled);
 
-            return filter.Match(input);
+            return regex.Match(input);
         }
     }
 }
