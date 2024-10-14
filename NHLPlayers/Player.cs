@@ -28,7 +28,7 @@ namespace NHLPlayers
         public int OTG { get; set; }
         public int SOG { get; set; }            // S changed to SOG
         public double S_Perc { get; set; }      // S% changed to S_Perc
-        public string TOI_GP { get; set; }      // TOI/GP changed to TOI_GP
+        public CustomTime TOI_GP { get; set; }  // TOI/GP changed to TOI_GP
         public double Shifts_GP { get; set; }   // Shifts/GP changed to Shifts_GP
         public double FOW_Perc { get; set; }    // FOW% changed to FOW_Perc
 
@@ -38,7 +38,7 @@ namespace NHLPlayers
             Team = data[1];             PIM = int.Parse(data[8]);           OTG = int.Parse(data[15]);
             Pos = data[2];              P_GP = double.Parse(data[9]);       SOG = int.Parse(data[16]);
             GP = int.Parse(data[3]);    PPG = int.Parse(data[10]);          S_Perc = double.Parse(data[17]);
-            G = int.Parse(data[4]);     PPP = int.Parse(data[11]);          TOI_GP = data[18];
+            G = int.Parse(data[4]);     PPP = int.Parse(data[11]);          TOI_GP = new CustomTime(data[18]);
             A = int.Parse(data[5]);     SHG = int.Parse(data[12]);          Shifts_GP = double.Parse(data[19]);
             PTS = int.Parse(data[6]);   SHP = int.Parse(data[13]);          FOW_Perc = double.Parse(data[20]);
         }

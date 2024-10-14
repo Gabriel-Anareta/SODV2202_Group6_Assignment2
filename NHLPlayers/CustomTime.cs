@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace NHLPlayers
 {
-    internal class CustomTime
+    public class CustomTime
     {
         public int Minutes { get; private set; }
         public int Seconds { get; private set; }
 
-        public CustomTime(int minutes, int seconds)
+        public CustomTime(string time)
         {
-            Minutes = minutes;
-            Seconds = seconds;
+            string[] split = time.Split(':');
+            Minutes = int.Parse(split[0]);
+            Seconds = int.Parse(split[1]);
         }
 
         public override string ToString()
