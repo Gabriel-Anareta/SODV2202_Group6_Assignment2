@@ -42,7 +42,7 @@ namespace NHLPlayers
             A = int.Parse(data[5]);     SHG = int.Parse(data[12]);          Shifts_GP = double.Parse(data[19]);
             PTS = int.Parse(data[6]);   SHP = int.Parse(data[13]);          FOW_Perc = double.Parse(data[20]);
         }
-
+        
         public override string ToString()
         {
             return (

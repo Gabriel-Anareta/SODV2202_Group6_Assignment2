@@ -25,16 +25,13 @@
                                 count++;
                                 continue;
                             }
-                                
-
+                            
                             List<string> cells = line == null ? 
                                 new List<string>() : 
                                 line.Split(",").ToList();
 
                             if (cells.Count > 0)
                                 data.Add(new Player(cells));
-
-                            count++;
                         }
                     }
                 }
