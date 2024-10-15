@@ -17,23 +17,36 @@ namespace NHLPlayers
             {
                 // get property
                 string prop = ExpressionManager.GetMatch(filter.Value, @"^(\w|[+\-/%])+").Value;
+                prop = PropManager.MapPlayerProp(prop);
                 object propObj = PropManager.GetPropValue(obj, prop);
-                dynamic propVal = propObj.GetType().GetProperty("value").GetValue(propObj);
+                dynamic propValTemp = propObj.GetType().GetProperty("value").GetValue(propObj);
+                dynamic propVal;
 
                 // check property on object
-                if (propVal is string)
+                if (propValTemp is string)
                 {
-                    if (propVal == "invalid property")
+                    if (propValTemp == "invalid property")
                         continue;
                 }
+
+                if (propValTemp is CustomTime)
+                    propVal = (propValTemp as CustomTime).AsSeconds();
+                else
+                    propVal = propValTemp;
 
                 // get operation
                 string op = ExpressionManager.GetMatch(filter.Value, @"[<>=]{1,2}").Value.Trim();
 
                 // get expression
-                dynamic exp = ExpressionManager.GetMatch(filter.Value, @"(\w|\s|[\-\.])+$").Value.Trim();
+                dynamic expTemp = ExpressionManager.GetMatch(filter.Value, @"(\w|\s|[\-\.])+$").Value.Trim();
+                dynamic exp;
                 Type propType = propVal.GetType();
-                exp = Convert.ChangeType(exp, propType);
+                expTemp = Convert.ChangeType(expTemp, propType);
+
+                if (expTemp is CustomTime)
+                    exp = (expTemp as CustomTime).AsSeconds();
+                else
+                    exp = expTemp;
 
                 // do not allow < > operations of string values
                 if ((op.Contains('<') || op.Contains('>')) && propVal is string) 

@@ -18,6 +18,11 @@ namespace NHLPlayers
             Seconds = int.Parse(split[1]);
         }
 
+        public int AsSeconds()
+        {
+            return Minutes * 60 + Seconds;
+        }
+
         public override string ToString()
         {
             return $"{Minutes}:{Seconds}";

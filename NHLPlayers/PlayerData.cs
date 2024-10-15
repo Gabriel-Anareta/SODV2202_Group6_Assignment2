@@ -32,11 +32,10 @@ namespace NHLPlayers
                             if (line == null)
                                 continue;
 
-                            Match match = ExpressionManager.GetMatch(line, @"[A-Z]{3}(\,\s[A-Z]{3})*");
+                            Match match = ExpressionManager.GetMatch(line, @"[A-Z]{3}(\,\s[A-Z]{3})*"); // make special case for multiple teams
                             List<string> cells = CustomSplit(line, match.Value);
-                            Player set = new Player(cells);
                             
-                            data.Add(set);
+                            data.Add(new Player(cells));
                         }
                     }
                 }

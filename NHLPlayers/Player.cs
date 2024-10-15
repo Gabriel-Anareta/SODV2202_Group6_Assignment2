@@ -28,6 +28,7 @@ namespace NHLPlayers
 
         public Player(List<string> data)
         {
+            // setting player properties using reflection
             PropertyInfo[] props = this.GetType().GetProperties();
 
             for (int i = 0; i < props.Length; i++)
@@ -40,10 +41,10 @@ namespace NHLPlayers
         {
             switch (i)
             {
-                case 0: case 2:
+                case 0: case 2: // Name, Pos
                     prop.SetValue(this, data);
                     break;
-                case 1:
+                case 1: // Team
                     List<string> teams = data.Split(',').ToList();
 
                     for (int j = 0; j < teams.Count; j++)
@@ -51,19 +52,19 @@ namespace NHLPlayers
 
                     prop.SetValue(this, teams);
                     break;
-                case 9:
+                case 9: // P_GP
                     if (data == "--")
                         prop.SetValue(this, null);
                     else
                         prop.SetValue(this, double.Parse(data));
                         break;
-                case 17: case 19: case 20:
+                case 17: case 19: case 20: // S_Perc, Shifts_GP, FOW_Perc
                     prop.SetValue(this, double.Parse(data));
                     break;
-                case 18:
+                case 18: // TOI_GP
                     prop.SetValue(this, new CustomTime(data));
                     break;
-                default:
+                default: // everything else
                     prop.SetValue(this, int.Parse(data));
                     break;
             }

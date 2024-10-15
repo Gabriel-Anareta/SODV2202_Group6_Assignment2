@@ -10,6 +10,8 @@ namespace NHLPlayers
 {
     public static class ExpressionManager
     {
+        // REGEX strings used in code for reference
+        
         // @"(\w|[+\-/%])+\s*[<>=]{1,2}\s*(\w|\s|[\-\.])+[^,]"      :   full expression
         // @"^(\w|[+\-/%])+"                                        :   property
         // @"[<>=]{1,2}"                                            :   operation
