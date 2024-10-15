@@ -13,7 +13,7 @@ namespace NHLPlayers
         public int PTS { get; set; }            // P changed to PTS
         public int Plus_Minus { get; set; }     // +/- changed to Plus_Minus
         public int PIM { get; set; }
-        public double P_GP { get; set; }        // P/GP changed to P_GP
+        public double? P_GP { get; set; }        // P/GP changed to P_GP
         public int PPG { get; set; }
         public int PPP { get; set; }
         public int SHG { get; set; }
@@ -47,13 +47,17 @@ namespace NHLPlayers
                     List<string> teams = data.Split(',').ToList();
 
                     for (int j = 0; j < teams.Count; j++)
-                    {
                         teams[j] = teams[j].Trim();
-                    }
 
                     prop.SetValue(this, teams);
                     break;
-                case 9: case 17: case 19: case 20:
+                case 9:
+                    if (data == "--")
+                        prop.SetValue(this, null);
+                    else
+                        prop.SetValue(this, double.Parse(data));
+                        break;
+                case 17: case 19: case 20:
                     prop.SetValue(this, double.Parse(data));
                     break;
                 case 18:
@@ -69,10 +73,24 @@ namespace NHLPlayers
         {
             string propsString = "";
             PropertyInfo[] props = this.GetType().GetProperties();
-
             foreach (PropertyInfo prop in props)
             {
-                propsString += $"{prop.Name}: {prop.GetValue(this)}\n";
+                if (prop.Name == "Team")
+                {
+                    string value = "";
+                    var list = prop.GetValue(this) as List<string>;
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        value += list[i];
+                        if (i + 1 != list.Count)
+                            value += ", ";
+                    }
+                    propsString += $"{prop.Name}: {value}\n";
+                }
+                else
+                {
+                    propsString += $"{prop.Name}: {prop.GetValue(this)}\n";
+                }
             }
 
             return propsString;

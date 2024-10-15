@@ -36,10 +36,8 @@ namespace NHLPlayers
                 exp = Convert.ChangeType(exp, propType);
 
                 // do not allow < > operations of string values
-                if (
-                    (op.Contains('<') || op.Contains('>')) &&
-                    (propVal is string)
-                ) continue;
+                if ((op.Contains('<') || op.Contains('>')) && propVal is string) 
+                    continue;
 
                 // dynamic type used to bypass compiler error when comparing two objects
                 switch (op)
