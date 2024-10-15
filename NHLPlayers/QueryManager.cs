@@ -9,7 +9,7 @@ namespace NHLPlayers
 {
     public static class QueryManager
     {
-        private static bool RunFilters(MatchCollection rawfilters, Object obj)
+        public static bool RunFilters(MatchCollection rawfilters, Object obj)
         {
             bool state = true;
 
@@ -21,23 +21,28 @@ namespace NHLPlayers
                 dynamic propVal = propObj.GetType().GetProperty("value").GetValue(propObj);
 
                 // check property on object
-                if (propVal == "invalid porperty")
-                    continue;
+                if (propVal is string)
+                {
+                    if (propVal == "invalid property")
+                        continue;
+                }
 
                 // get operation
                 string op = ExpressionManager.GetMatch(filter.Value, @"[<>=]{1,2}").Value.Trim();
 
-                // get expression from
+                // get expression
                 dynamic exp = ExpressionManager.GetMatch(filter.Value, @"(\w|\s|[\-\.])+$").Value.Trim();
+                Type propType = propVal.GetType();
+                exp = Convert.ChangeType(exp, propType);
 
                 // do not allow < > operations of string values
                 if (
                     (op.Contains('<') || op.Contains('>')) &&
-                    (propVal is string || exp is string)
+                    (propVal is string)
                 ) continue;
 
                 // dynamic type used to bypass compiler error when comparing two objects
-                switch(op)
+                switch (op)
                 {
                     case "<":
                         state = state && (propVal < exp);
@@ -54,7 +59,7 @@ namespace NHLPlayers
                     case "==":
                         state = state && (propVal == exp);
                         break;
-                }  
+                }
             }
 
             return state;

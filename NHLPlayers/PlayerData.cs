@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 
 namespace NHLPlayers
 {
@@ -27,13 +28,15 @@ namespace NHLPlayers
                                 count++;
                                 continue;
                             }
-                            
-                            List<string> cells = line == null ? 
-                                new List<string>() : 
-                                line.Split(",").ToList();
 
-                            if (cells.Count > 0)
-                                data.Add(new Player(cells));
+                            if (line == null)
+                                continue;
+
+                            Match match = ExpressionManager.GetMatch(line, @"[A-Z]{3}(\,\s[A-Z]{3})*");
+                            List<string> cells = CustomSplit(line, match.Value);
+                            Player set = new Player(cells);
+                            
+                            data.Add(set);
                         }
                     }
                 }
@@ -48,6 +51,36 @@ namespace NHLPlayers
             }
 
             return data;
+        }
+
+        private static List<string> CustomSplit(string line, string teams)
+        {
+            List<string> split = new List<string>();
+            int index = -1;
+            int teamIndex = line.IndexOf(teams);
+
+            while (true)
+            {
+                int start = index + 1;
+                index = line.IndexOf(',', index + 1);
+
+                if (index > teamIndex && index <= teamIndex + teams.Length)
+                {
+                    split.Add(teams);
+                    index = teamIndex + teams.Length;
+                    continue;
+                }
+
+                if (index < 0)
+                {
+                    split.Add(line.Substring(start, line.Length - start));
+                    break;
+                }
+
+                split.Add(line.Substring(start, index - start));
+            }
+
+            return split;
         }
     }
 }

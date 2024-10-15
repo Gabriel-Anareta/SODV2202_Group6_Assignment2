@@ -10,10 +10,12 @@ namespace NHLPlayers
 {
     public static class ExpressionManager
     {
-        // @"(\w|[+\-/%])+\s*[<>=]{1,2}\s*(\w|\s|[\-\.])+[^,]"      :   full ex
-        // @"^(\w|[+\-/%])+"                                        :   prop
-        // @"[<>=]{1,2}"                                            :   op
-        // @"(\w|\s|[\-\.])+$"                                      :   arg
+        // @"(\w|[+\-/%])+\s*[<>=]{1,2}\s*(\w|\s|[\-\.])+[^,]"      :   full expression
+        // @"^(\w|[+\-/%])+"                                        :   property
+        // @"[<>=]{1,2}"                                            :   operation
+        // @"(\w|\s|[\-\.])+$"                                      :   argument
+
+        // @"[A-Z]{3}(\,\s[A-Z]{3})*"                               :   filter for team 
 
         public static MatchCollection GetMatches(string input, string filter)
         {

@@ -5,7 +5,7 @@ namespace NHLPlayers
     public class Player
     {
         public string Name { get; set; }
-        public string Team { get; set; }
+        public List<string> Team { get; set; }
         public string Pos { get; set; }
         public int GP { get; set; }
         public int G { get; set; }
@@ -32,29 +32,39 @@ namespace NHLPlayers
 
             for (int i = 0; i < props.Length; i++)
             {
-                SetValue(props, data, i);
+                SetValue(props[i], data[i], i);
             }
         }
 
-        private void SetValue(PropertyInfo[] props, List<string> data, int i)
+        private void SetValue(PropertyInfo prop, string data, int i)
         {
-            switch(i)
+            switch (i)
             {
-                case 0: case 1: case 2:
-                    props[i].SetValue(this, data[i]);
+                case 0: case 2:
+                    prop.SetValue(this, data);
+                    break;
+                case 1:
+                    List<string> teams = data.Split(',').ToList();
+
+                    for (int j = 0; j < teams.Count; j++)
+                    {
+                        teams[j] = teams[j].Trim();
+                    }
+
+                    prop.SetValue(this, teams);
                     break;
                 case 9: case 17: case 19: case 20:
-                    props[i].SetValue(this, double.Parse(data[i]));
+                    prop.SetValue(this, double.Parse(data));
                     break;
                 case 18:
-                    props[i].SetValue(this, new CustomTime(data[i]));
+                    prop.SetValue(this, new CustomTime(data));
                     break;
-                default: 
-                    props[i].SetValue(this, int.Parse(data[i]));
+                default:
+                    prop.SetValue(this, int.Parse(data));
                     break;
             }
         }
-        
+
         public override string ToString()
         {
             string propsString = "";
