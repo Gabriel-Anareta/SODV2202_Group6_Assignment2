@@ -93,7 +93,7 @@ namespace NHLPlayers
             Match timeMatch = ExpressionManager.GetTime(value);
             if (type == typeof(CustomTime))
             {
-                if (timeMatch.Value == "")
+                if (timeMatch.Value != "")
                     return true;
             }
 
