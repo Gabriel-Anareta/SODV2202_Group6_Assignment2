@@ -27,7 +27,8 @@ namespace NHLPlayers
 
                 // check property on object
                 if (propTemp is string)
-                    if (propTemp == "invalid property") continue;
+                    if (propTemp == "invalid property") 
+                        continue;
 
                 if (propTemp is CustomTime)
                     prop = (propTemp as CustomTime).AsSeconds();  // explicit cast to see method
@@ -83,15 +84,18 @@ namespace NHLPlayers
 
             Match timeMatch = ExpressionManager.GetMatch(value, @"[0-9]{1,2}\:[0-9]{2}");
             if (castTo is CustomTime)
-                if (timeMatch != null) return true;
+                if (timeMatch != null) 
+                    return true;
 
             bool intMatch = value.Contains('.');
             if (castTo is int)
-                if (timeMatch == null && !intMatch) return true;
+                if (timeMatch == null && !intMatch) 
+                    return true;
 
             Match doubleMatch = ExpressionManager.GetMatch(value, @"\-*[0-9]{1,}\.{0,1}[0-9]*");
             if (castTo is double)
-                if (timeMatch == null && doubleMatch != null) return true;
+                if (timeMatch == null && doubleMatch != null) 
+                    return true;
 
             return false;
         }
@@ -112,5 +116,7 @@ namespace NHLPlayers
 
             return value;
         }
+
+        
     }
 }
