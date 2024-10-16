@@ -66,9 +66,9 @@ namespace NHLPlayers
             {
                 List<string> teams = data.Split(',').ToList();
 
-                for (int j = 0; j < teams.Count; j++)
+                for (int i = 0; i < teams.Count; i++)
                 {
-                    teams[j] = teams[j].Trim();
+                    teams[i] = teams[i].Trim();
                 }
 
                 prop.SetValue(this, teams);
