@@ -16,10 +16,12 @@ namespace NHLPlayers
         {
             bool state = true;
 
-            foreach (Match filter in rawfilters)
+            for (int i = 0; i < rawfilters.Count; i++)
             {
+                Match filter = rawfilters[i];
+
                 // get property
-                string propString = ExpressionManager.GetMatch(filter.Value, @"^(\w|[+\-/%])+").Value;
+                string propString = ExpressionManager.GetProperty(filter.Value).Value;
                 propString = PropManager.MapPlayerProp(propString);
                 object propObj = PropManager.GetPropValue(obj, propString);
                 dynamic propTemp = propObj.GetType().GetProperty("value").GetValue(propObj);
@@ -27,7 +29,7 @@ namespace NHLPlayers
 
                 // check property on object
                 if (propTemp is string)
-                    if (propTemp == "invalid property") 
+                    if (propTemp == "invalid property")
                         continue;
 
                 if (propTemp is CustomTime)
@@ -36,87 +38,97 @@ namespace NHLPlayers
                     prop = propTemp;
 
                 // get operation
-                string op = ExpressionManager.GetMatch(filter.Value, @"[<>=]{1,2}").Value.Trim();
-
-                // get expression
-                string expTemp = ExpressionManager.GetMatch(filter.Value, @"(\w|\s|[\-\.])+$").Value.Trim();
-                dynamic exp;
-                Type propType = prop.GetType();
-                
-                // check expression on prop value for casting
-                if (CanCast(expTemp, prop))
-                    exp = CastTo(expTemp, propTemp);
-                else
-                    continue;
+                string op = ExpressionManager.GetOperation(filter.Value).Value.Trim();
 
                 // do not allow < > operations of string values
-                if ((op.Contains('<') || op.Contains('>')) && prop is string) 
+                if (prop is string)
+                    if (op.Contains('<') || op.Contains('>'))
+                        continue;
+
+                // get argument
+                string argTemp = ExpressionManager.GetArgument(filter.Value).Value.Trim();
+                dynamic arg;
+                Type propType = obj.GetType().GetProperty(propString).PropertyType;
+
+                // check expression on prop value for casting
+                if (CanCast(argTemp, propType))
+                    arg = CastTo(argTemp, propType);
+                else
                     continue;
 
                 // run expressions based on given operations
                 switch (op)
                 {
                     case "<":
-                        state = state && (prop < exp);
+                        state = state && (prop < arg);
                         break;
                     case ">":
-                        state = state && (prop > exp);
+                        state = state && (prop > arg);
                         break;
-                    case "<=": case "=<":
-                        state = state && (prop <= exp);
+                    case "<=":
+                    case "=<":
+                        state = state && (prop <= arg);
                         break;
-                    case ">=": case "=>":
-                        state = state && (prop >= exp);
+                    case ">=":
+                    case "=>":
+                        state = state && (prop >= arg);
                         break;
                     case "==":
-                        state = state && (prop == exp);
+                        state = state && (prop == arg);
                         break;
                 }
+
+                if (!state)
+                    return state;
             }
 
             return state;
         }
-        
-        private static bool CanCast(string value, dynamic castTo)
+
+        private static bool CanCast(string value, Type type)
         {
-            if (castTo is string)
+            if (type == typeof(string))
                 return true;
 
-            Match timeMatch = ExpressionManager.GetMatch(value, @"[0-9]{1,2}\:[0-9]{2}");
-            if (castTo is CustomTime)
-                if (timeMatch != null) 
+            Match timeMatch = ExpressionManager.GetTime(value);
+            if (type == typeof(CustomTime))
+            {
+                if (timeMatch.Value == "")
                     return true;
+            }
 
-            bool intMatch = value.Contains('.');
-            if (castTo is int)
-                if (timeMatch == null && !intMatch) 
+            if (type == typeof(int))
+            {
+                bool intMatch = value.Contains('.');
+                if (timeMatch.Value == "" && !intMatch)
                     return true;
+            }
 
-            Match doubleMatch = ExpressionManager.GetMatch(value, @"\-*[0-9]{1,}\.{0,1}[0-9]*");
-            if (castTo is double)
-                if (timeMatch == null && doubleMatch != null) 
+            if (type == typeof(double) || type == typeof(double?))
+            {
+                Match doubleMatch = ExpressionManager.GetDouble(value);
+                if (timeMatch.Value == "" && doubleMatch.Value != "")
                     return true;
+            }
 
             return false;
         }
 
-        private static dynamic CastTo(string value, dynamic castTo)
+        private static dynamic CastTo(string value, Type type)
         {
-            if (castTo is string)
+            if (type == typeof(string))
                 return value;
 
-            if (castTo is CustomTime)
+            if (type == typeof(CustomTime))
                 return (new CustomTime(value)).AsSeconds();
 
-            if (castTo is int)
+            if (type == typeof(int))
                 return int.Parse(value);
 
-            if (castTo is double)
+            if (type == typeof(double))
                 return double.Parse(value);
 
             return value;
         }
-
-        
     }
 }
