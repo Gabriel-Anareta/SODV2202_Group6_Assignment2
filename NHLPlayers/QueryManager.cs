@@ -9,7 +9,7 @@ namespace NHLPlayers
 {
     public static class QueryManager
     {
-        // method uses dynamic types - make sure checking is done extensively to avoid type errors
+        // method uses dynamic types - make sure checking is done to avoid type errors
         // dynamic type used to keep code relatively simple without bloating it with multipe layers of type checks
         // note to self - dynamic types and reflections seem to love throwing warnings no matter what :(
         public static bool RunFilters(MatchCollection rawfilters, Object obj)
@@ -40,8 +40,8 @@ namespace NHLPlayers
                 // get operation
                 string op = ExpressionManager.GetOperation(filter.Value).Value.Trim();
 
-                // do not allow < > operations of string values
-                if (prop is string)
+                // ignore < > operations of string or null values
+                if (prop is string || prop is List<string> || prop == null)
                     if (op.Contains('<') || op.Contains('>'))
                         continue;
 
@@ -74,7 +74,10 @@ namespace NHLPlayers
                         state = state && (prop >= arg);
                         break;
                     case "==":
-                        state = state && (prop == arg);
+                        if (prop is List<string>)
+                            state = state && (prop as List<string>).Any(value => value == arg); // explicit cast to see method
+                        else
+                            state = state && (prop == arg);
                         break;
                 }
 
@@ -87,7 +90,7 @@ namespace NHLPlayers
 
         private static bool CanCast(string value, Type type)
         {
-            if (type == typeof(string))
+            if (type == typeof(string) || type == typeof(List<string>))
                 return true;
 
             Match timeMatch = ExpressionManager.GetTime(value);
@@ -106,6 +109,9 @@ namespace NHLPlayers
 
             if (type == typeof(double) || type == typeof(double?))
             {
+                if (value == "null")
+                    return true;
+
                 Match doubleMatch = ExpressionManager.GetDouble(value);
                 if (timeMatch.Value == "" && doubleMatch.Value != "")
                     return true;
@@ -116,17 +122,19 @@ namespace NHLPlayers
 
         private static dynamic CastTo(string value, Type type)
         {
-            if (type == typeof(string))
-                return value;
-
             if (type == typeof(CustomTime))
                 return (new CustomTime(value)).AsSeconds();
 
             if (type == typeof(int))
                 return int.Parse(value);
 
-            if (type == typeof(double))
-                return double.Parse(value);
+            if (type == typeof(double) || type == typeof(double?))
+            {
+                if (value == "null")
+                    return (null as double?);
+                else
+                    return double.Parse(value);
+            }
 
             return value;
         }
