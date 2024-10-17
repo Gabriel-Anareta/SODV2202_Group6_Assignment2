@@ -15,18 +15,18 @@ namespace NHLPlayers
 
             List<Player> list = Test(player => player.FOW_Perc > 40).ToList();
 
-            label1.Text = "GP > 60, FOW% > 40";
+            label1.Text = "GP > 60, Team == ANA";
 
             string toShow = "";
             MatchCollection matches = ExpressionManager.GetExpressions(label1.Text);
             IEnumerable<Player> result = players.Where(player => QueryManager.RunFilters(matches, player));
 
-            toShow = $"{result.Count()}";
+            toShow = $"Total count: {result.Count()}\n";
 
-            /*foreach (Match in matches.Take<>())
+            foreach (Player player in result.Take<Player>(20))
             {
-                toShow += $"{match.Value}\n";
-            }*/
+                toShow += $"{player.Name}\n";
+            }
 
             label2.Text = toShow;
         }
