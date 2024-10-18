@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,52 +15,20 @@ namespace NHLPlayers
     {
         public static bool RunFilters(this Player player, MatchCollection rawfilters)
         {
-            bool state = true;
-
             for (int i = 0; i < rawfilters.Count; i++)
             {
                 // set current filter
                 string filter = rawfilters[i].Value;
 
-                // get property
-                string propName = GetPropName(filter);
-                
-                // check property
-                if (!ValidProp(propName, typeof(Player)))
-                    continue;
+                // run expression
+                bool expressionResult = RunExpression(filter, player);
 
-                var prop = PropManager.GetPropValue(player, propName);
-
-                // get operation
-                string op = filter.AsOperation().Value;
-
-                // ignore < > operations of string or null values
-                if (IllogicalComparison(prop, op))
-                    continue;
-
-                // get argument as string
-                string argString = filter.AsArgument().Value.Trim();
-                
-                Type propType = prop.GetType();
-
-                // check expression on prop value
-                if (!argString.CanCast(propType))
-                    continue;
-                
-                // set argument value
-                var arg = argString.CastTo(propType);
-
-                if (prop is CustomTime)
-                    prop = (prop as CustomTime).AsSeconds();  // explicit cast to see method
-
-                // run expression and update current state
-                state = state && RunExpression(op, prop, arg);
-
-                if (!state)
-                    return state;
+                // check state
+                if (!expressionResult)
+                    return false;
             }
 
-            return state;
+            return true;
         }
 
         public static IEnumerable<Player> RunOrders(this IEnumerable<Player> data, MatchCollection orders)
@@ -80,6 +50,42 @@ namespace NHLPlayers
 
 
         // Helper functions
+
+        private static bool RunExpression(string filter, Player player)
+        {
+            // get property
+            string propName = GetPropName(filter);
+
+            // check property
+            if (!ValidProp(propName, typeof(Player)))
+                return true;
+
+            var prop = PropManager.GetPropValue(player, propName);
+
+            // get operation
+            string op = filter.AsOperation().Value;
+
+            // ignore < > operations of string or null values
+            if (IllogicalComparison(prop, op))
+                return true;
+
+            // get argument as string
+            string argString = filter.AsArgument().Value.Trim();
+
+            Type propType = prop.GetType();
+
+            // check expression on prop value
+            if (!argString.CanCast(propType))
+                return true;
+
+            // set argument value
+            var arg = argString.CastTo(propType);
+
+            if (prop is CustomTime)
+                prop = (prop as CustomTime).AsSeconds();  // explicit cast to see method
+
+            return EvaluateExpression(arg, op, arg);
+        }
 
         private static string GetPropName(string filter)
         {
@@ -115,17 +121,12 @@ namespace NHLPlayers
 
             Match timeMatch = value.AsTime();
             if (type == typeof(CustomTime))
-            {
                 if (timeMatch.Value != "")
                     return true;
-            }
 
             if (type == typeof(int))
-            {
-                bool intMatch = value.Contains('.');
-                if (timeMatch.Value == "" && !intMatch)
+                if (timeMatch.Value == "" && !value.Contains('.'))
                     return true;
-            }
 
             if (type == typeof(double) || type == typeof(double?))
             {
@@ -159,7 +160,7 @@ namespace NHLPlayers
             return value;
         }
 
-        private static bool RunExpression(string op, dynamic prop, dynamic arg)
+        private static bool EvaluateExpression(dynamic prop, string op, dynamic arg)
         {
             switch (op)
             {
