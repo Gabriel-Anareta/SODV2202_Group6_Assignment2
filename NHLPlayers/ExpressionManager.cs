@@ -1,70 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NHLPlayers
 {
-    public static partial class ExpressionManager
+    public static class ExpressionManager
     {
-        // REGEX strings used for reference
+        public static MatchCollection GetExpressions(string input) => RegexCollection.ExpressionRegex().Matches(input);
 
-        // @"(\w|[+\-/%])+\s*[<>=]{1,2}\s*(\w|\s|[\-\.])+[^,]"              :   full expression
-        // @"^(\w|[+\-/%])+"                                                :   property
-        // @"[<>=]{1,2}"                                                    :   operation
-        // @"(\w|\s|[\-\.])+$"                                              :   argument
-        // @"(\w|[+\-/%])+\s+(\basc(ending){0,1}\b|\bdes(cending){0,1}\b)"  :   full order
-        // @"(\basc(ending){0,1}\b|\bdes(cending){0,1}\b)$"                 :   asc des
-        // @"[A-Z]{3}(\,\s[A-Z]{3})*"                                       :   filter for team
-        // @"[0-9]{1,2}\:[0-9]{2}"                                          :   filter for CustomTime
-        // @"\-{0,1}[0-9]{1,}\.{0,1}[0-9]*"                                 :   filter for double
+        public static Match GetProperty(string input) => RegexCollection.PropertyRegex().Match(input);
 
-        [GeneratedRegex(@"(\w|[+\-/%])+\s*[<>=]{1,2}\s*(\w|\s|[\-\.])+[^,]", RegexOptions.Compiled)]
-        private static partial Regex ExpressionRegex();
+        public static Match GetOperation(string input) => RegexCollection.OperationRegex().Match(input);
 
-        [GeneratedRegex(@"^(\w|[+\-/%])+", RegexOptions.Compiled)]
-        private static partial Regex PropertyRegex();
+        public static Match GetArgument(string input) => RegexCollection.ArgumentRegex().Match(input);
 
-        [GeneratedRegex(@"[<>=]{1,2}", RegexOptions.Compiled)]
-        private static partial Regex OperationRegex();
+        public static MatchCollection GetOrders(string input) => RegexCollection.OrderRegex().Matches(input);
 
-        [GeneratedRegex(@"(\w|\s|[\-\.])+$", RegexOptions.Compiled)]
-        private static partial Regex ArgumentRegex();
+        public static Match GetAscDes(string input) => RegexCollection.AscDesRegex().Match(input);
 
-        [GeneratedRegex(@"(\w|[+\-/%])+\s+(\basc(ending){0,1}\b|\bdes(cending){0,1}\b)", RegexOptions.Compiled)]
-        private static partial Regex OrderRegex();
+        public static Match GetTeam(string input) => RegexCollection.TeamRegex().Match(input);
 
-        [GeneratedRegex(@"(\basc(ending){0,1}\b|\bdes(cending){0,1}\b)$", RegexOptions.Compiled)]
-        private static partial Regex AscDesRegex();
+        public static Match GetTime(string input) => RegexCollection.TimeRegex().Match(input);
 
-        [GeneratedRegex(@"[A-Z]{3}(\,\s[A-Z]{3})*", RegexOptions.Compiled)]
-        private static partial Regex TeamRegex();
-
-        [GeneratedRegex(@"[0-9]{1,2}\:[0-9]{2}", RegexOptions.Compiled)]
-        private static partial Regex TimeRegex();
-
-        [GeneratedRegex(@"\-{0,1}[0-9]{1,}\.{0,1}[0-9]*", RegexOptions.Compiled)]
-        private static partial Regex DoubleRegex();
-
-        public static MatchCollection GetExpressions(string input) => ExpressionRegex().Matches(input);
-
-        public static Match GetProperty(string input) => PropertyRegex().Match(input);
-
-        public static Match GetOperation(string input) => OperationRegex().Match(input);
-
-        public static Match GetArgument(string input) => ArgumentRegex().Match(input);
-
-        public static MatchCollection GetOrders(string input) => OrderRegex().Matches(input);
-
-        public static Match GetAscDes(string input) => AscDesRegex().Match(input);
-
-        public static Match GetTeam(string input) => TeamRegex().Match(input);
-
-        public static Match GetTime(string input) => TimeRegex().Match(input);
-
-        public static Match GetDouble(string input) => DoubleRegex().Match(input);
+        public static Match GetDouble(string input) => RegexCollection.DoubleRegex().Match(input);
     }
 }
