@@ -25,17 +25,15 @@ namespace NHLPlayers
 
         public static IEnumerable<Player> RunOrders(this IEnumerable<Player> data, MatchCollection orders)
         {
-            if (orders.Count == 0)
-                return data;
-
             var result = data;
+            bool isMainFilter = true;
 
-            // Run main order
-            result = result.OrderData(orders[0].Value);
-
-            // Run succeding orders
-            for (int i = 1; i < orders.Count; i++)
-                result = result.OrderData(orders[i].Value, false);
+            // Run orders
+            for (int i = 0; i < orders.Count; i++)
+            {
+                result = result.OrderData(orders[i].Value, isMainFilter);
+                isMainFilter = false;
+            }
 
             return result;
         }
@@ -177,7 +175,7 @@ namespace NHLPlayers
             return true;
         }
 
-        private static IEnumerable<Player> OrderData(this IEnumerable<Player> data, string filter, bool isMainFilter = true)
+        private static IEnumerable<Player> OrderData(this IEnumerable<Player> data, string filter, bool isMainFilter)
         {
             // check property
             string propName = GetPropName(filter);
