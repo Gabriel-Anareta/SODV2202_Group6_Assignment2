@@ -32,62 +32,46 @@ namespace NHLPlayers
             PropertyInfo[] props = this.GetType().GetProperties();
 
             for (int i = 0; i < props.Length; i++)
-                SetValue(props[i], data[i]);
+                props[i].SetValue(this, DataValue(props[i], data[i]));
         }
 
-        public Player()
-        {
-            PropertyInfo[] props = this.GetType().GetProperties();
-            List<string> data = new List<string>();
-            for (int i = 0; i < 21; i++)
-                data.Add("0");
-
-            for (int i = 0; i < props.Length; i++)
-            {
-                SetValue(props[i], data[i]);
-            }
-        }
-
-        private void SetValue(PropertyInfo prop, string data)
+        private dynamic? DataValue(PropertyInfo prop, string data)
         {
             Type propType = prop.PropertyType;
 
             if (propType == typeof(int))
-            {
-                prop.SetValue(this, int.Parse(data));
-                return;
-            }
+                return int.Parse(data);
 
             if (propType == typeof(double) || propType == typeof(double?))
             {
                 if (data == "--")
-                    prop.SetValue(this, null);
+                    return (null as double?);
                 else
-                    prop.SetValue(this, double.Parse(data));
-                return;
+                    return double.Parse(data);
             }
 
             if (propType == typeof(string))
-            {
-                prop.SetValue(this, data);
-                return;
-            }
+                return data;
 
             if (propType == typeof(List<string>))
-            {
-                List<string> teams = data.Split(',').ToList();
-                for (int i = 0; i < teams.Count; i++)
-                    teams[i] = teams[i].Trim();
-                teams.Sort();
-                prop.SetValue(this, teams);
-                return;
-            }
+                return TeamList(data);
 
             if (propType == typeof(CustomTime))
-            {
-                prop.SetValue(this, new CustomTime(data));
-                return;
-            }
+                return new CustomTime(data);
+
+            return Convert.ChangeType(null, propType);
+        }
+
+        private List<string> TeamList(string data)
+        {
+            List<string> teams = data.Split(',').ToList();
+
+            for (int i = 0; i < teams.Count; i++)
+                teams[i] = teams[i].Trim();
+
+            teams.Sort();
+
+            return teams;
         }
 
         public override string ToString()

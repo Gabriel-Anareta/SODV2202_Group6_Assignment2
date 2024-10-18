@@ -9,14 +9,14 @@ namespace NHLPlayers
 {
     public static class PropManager
     {
-        public static object GetPropValue(Object obj, string prop)
+        public static dynamic? GetPropValue(Object obj, string prop)
         {
             Type type = obj.GetType();
             
             if (type.GetProperty(prop) == null)
-                return new { value = "invalid property" };
+                return "invalid property";
 
-            return new { value = type.GetProperty(prop).GetValue(obj) };
+            return type.GetProperty(prop).GetValue(obj);
         }
 
         public static string MapPlayerProp(string prop)

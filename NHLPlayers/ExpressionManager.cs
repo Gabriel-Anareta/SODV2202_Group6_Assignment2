@@ -9,22 +9,22 @@ namespace NHLPlayers
 {
     public static class ExpressionManager
     {
-        public static MatchCollection GetExpressions(string input) => RegexCollection.ExpressionRegex().Matches(input);
+        public static MatchCollection AsExpressions(this string input) => RegexCollection.ExpressionRegex().Matches(input);
 
-        public static Match GetProperty(string input) => RegexCollection.PropertyRegex().Match(input);
+        public static Match AsProperty(this string input) => RegexCollection.PropertyRegex().Match(input);
 
-        public static Match GetOperation(string input) => RegexCollection.OperationRegex().Match(input);
+        public static Match AsOperation(this string input) => RegexCollection.OperationRegex().Match(input);
 
-        public static Match GetArgument(string input) => RegexCollection.ArgumentRegex().Match(input);
+        public static Match AsArgument(this string input) => RegexCollection.ArgumentRegex().Match(input);
 
-        public static MatchCollection GetOrders(string input) => RegexCollection.OrderRegex().Matches(input);
+        public static MatchCollection AsOrders(this string input) => RegexCollection.OrderRegex().Matches(input);
 
-        public static Match GetAscDes(string input) => RegexCollection.AscDesRegex().Match(input);
+        public static Match AsAscDes(this string input) => RegexCollection.AscDesRegex().Match(input);
 
-        public static Match GetTeam(string input) => RegexCollection.TeamRegex().Match(input);
+        public static Match AsTeam(this string input) => RegexCollection.TeamRegex().Match(input);
 
-        public static Match GetTime(string input) => RegexCollection.TimeRegex().Match(input);
+        public static Match AsTime(this string input) => RegexCollection.TimeRegex().Match(input);
 
-        public static Match GetDouble(string input) => RegexCollection.DoubleRegex().Match(input);
+        public static Match AsDouble(this string input) => RegexCollection.DoubleRegex().Match(input);
     }
 }

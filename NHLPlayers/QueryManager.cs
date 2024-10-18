@@ -11,41 +11,42 @@ namespace NHLPlayers
 {
     public static class QueryManager
     {
-        public static bool RunFilters(MatchCollection rawfilters, Object obj)
+        public static bool RunFilters(this Player player, MatchCollection rawfilters)
         {
             bool state = true;
 
             for (int i = 0; i < rawfilters.Count; i++)
             {
+                // set current filter
                 string filter = rawfilters[i].Value;
 
                 // get property
                 string propName = GetPropName(filter);
-                dynamic prop;
-                if (CheckProp(propName, typeof(Player)))
-                    prop = GetPropValue(propName, obj);
-                else
+                
+                // check property
+                if (!ValidProp(propName, typeof(Player)))
                     continue;
+
+                var prop = PropManager.GetPropValue(player, propName);
 
                 // get operation
-                string op = ExpressionManager.GetOperation(filter).Value;
+                string op = filter.AsOperation().Value;
 
                 // ignore < > operations of string or null values
-                if (prop is string || prop is List<string> || prop == null)
-                    if (op.Contains('<') || op.Contains('>'))
-                        continue;
+                if (IllogicalComparison(prop, op))
+                    continue;
 
-                // get argument
-                string argString = ExpressionManager.GetArgument(filter).Value.Trim();
-                dynamic arg;
-
+                // get argument as string
+                string argString = filter.AsArgument().Value.Trim();
+                
                 Type propType = prop.GetType();
 
-                // check expression on prop value for casting
-                if (argString.CanCast(propType))
-                    arg = argString.CastTo(propType);
-                else
+                // check expression on prop value
+                if (!argString.CanCast(propType))
                     continue;
+                
+                // set argument value
+                var arg = argString.CastTo(propType);
 
                 if (prop is CustomTime)
                     prop = (prop as CustomTime).AsSeconds();  // explicit cast to see method
@@ -66,8 +67,11 @@ namespace NHLPlayers
                 return data;
 
             var result = data;
+
+            // Run main order
             result = result.OrderData(orders[0].Value);
 
+            // Run succeding orders
             for (int i = 1; i < orders.Count; i++)
                 result = result.OrderData(orders[i].Value, false);
 
@@ -79,15 +83,15 @@ namespace NHLPlayers
 
         private static string GetPropName(string filter)
         {
-            string propName = ExpressionManager.GetProperty(filter).Value;
+            string propName = filter.AsProperty().Value;
             propName = PropManager.MapPlayerProp(propName);
 
             return propName;
         }
 
-        private static bool CheckProp(string propName, Type type)
+        private static bool ValidProp(string propName, Type type)
         {
-            PropertyInfo prop = type.GetProperty(propName);
+            PropertyInfo? prop = type.GetProperty(propName);
 
             if (prop == null)
                 return false;
@@ -95,12 +99,13 @@ namespace NHLPlayers
             return true;
         }
 
-        private static dynamic GetPropValue(string propName, Object obj)
+        private static bool IllogicalComparison(dynamic prop, string op)
         {
-            Object propObj = PropManager.GetPropValue(obj, propName);
-            dynamic prop = propObj.GetType().GetProperty("value").GetValue(propObj);
+            if (prop is string || prop is List<string> || prop == null)
+                if (op.Contains('<') || op.Contains('>'))
+                    return true;
 
-            return prop;
+            return false;
         }
 
         private static bool CanCast(this string value, Type type)
@@ -108,7 +113,7 @@ namespace NHLPlayers
             if (type == typeof(string) || type == typeof(List<string>))
                 return true;
 
-            Match timeMatch = ExpressionManager.GetTime(value);
+            Match timeMatch = value.AsTime();
             if (type == typeof(CustomTime))
             {
                 if (timeMatch.Value != "")
@@ -127,7 +132,7 @@ namespace NHLPlayers
                 if (value == "null")
                     return true;
 
-                Match doubleMatch = ExpressionManager.GetDouble(value);
+                Match doubleMatch = value.AsDouble();
                 if (timeMatch.Value == "" && doubleMatch.Value != "")
                     return true;
             }
@@ -135,7 +140,7 @@ namespace NHLPlayers
             return false;
         }
 
-        private static dynamic CastTo(this string value, Type type)
+        private static dynamic? CastTo(this string value, Type type)
         {
             if (type == typeof(CustomTime))
                 return (new CustomTime(value)).AsSeconds();
@@ -182,11 +187,11 @@ namespace NHLPlayers
         {
             // check property
             string propName = GetPropName(filter);
-            if (!CheckProp(propName, typeof(Player)))
+            if (!ValidProp(propName, typeof(Player)))
                 return data;
 
             // get arg
-            string arg = ExpressionManager.GetAscDes(filter).Value;
+            string arg = filter.AsAscDes().Value;
 
             if (arg == "")
                 return data;

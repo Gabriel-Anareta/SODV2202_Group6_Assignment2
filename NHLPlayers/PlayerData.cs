@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NHLPlayers
 {
@@ -16,29 +17,7 @@ namespace NHLPlayers
             {
                 try
                 {
-                    using (StreamReader reader = new StreamReader(csvPath))
-                    {
-                        int count = 0;
-                        while (!reader.EndOfStream)
-                        {
-                            string? line = reader.ReadLine();
-
-                            if (count == 0)
-                            {
-                                count++;
-                                continue;
-                            }
-
-                            if (line == null)
-                                continue;
-
-                            Match teams = ExpressionManager.GetTeam(line);
-                            List<string> cells = line.CustomSplit(teams.Value);
-                            Player set = new Player(cells);
-
-                            data.Add(new Player(cells));
-                        }
-                    }
+                    data = ReadFile(csvPath);
                 }
                 catch (Exception e)
                 {
@@ -48,6 +27,37 @@ namespace NHLPlayers
             else
             {
                 // Catch exception in invalid file path -- Place code here to display an error message
+            }
+
+            return data;
+        }
+
+        private static List<Player> ReadFile(string path)
+        {
+            List<Player> data = new List<Player>();
+
+            using (StreamReader reader = new StreamReader(path))
+            {
+                int count = 0;
+                while (!reader.EndOfStream)
+                {
+                    string? line = reader.ReadLine();
+
+                    if (count == 0)
+                    {
+                        count++;
+                        continue;
+                    }
+
+                    if (line == null)
+                        continue;
+
+                    Match teams = line.AsTeam();
+                    List<string> cells = line.CustomSplit(teams.Value);
+                    Player set = new Player(cells);
+
+                    data.Add(new Player(cells));
+                }
             }
 
             return data;

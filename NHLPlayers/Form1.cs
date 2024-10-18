@@ -18,8 +18,8 @@ namespace NHLPlayers
             label1.Text = "GP > 60, Team == ANA";
 
             string toShow = "";
-            MatchCollection matches = ExpressionManager.GetExpressions(label1.Text);
-            IEnumerable<Player> result = players.Where(player => QueryManager.RunFilters(matches, player));
+            MatchCollection matches = label1.Text.AsExpressions();
+            IEnumerable<Player> result = players.Where(player => player.RunFilters(matches));
 
             toShow = $"Total count: {result.Count()}\n";
 
