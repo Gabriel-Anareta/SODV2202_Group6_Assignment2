@@ -60,7 +60,7 @@ namespace NHLPlayers
             if (!ValidProp(propName, typeof(Player)))
                 return true;
 
-            var prop = PropManager.GetPropValue(player, propName);
+            dynamic? prop = PropManager.GetPropValue(player, propName);
 
             // get operation
             string op = filter.AsOperation().Value;
@@ -79,12 +79,13 @@ namespace NHLPlayers
                 return true;
 
             // set argument value
-            var arg = argString.CastTo(propType);
+            dynamic? arg = argString.CastTo(propType);
 
             if (prop is CustomTime)
                 prop = (prop as CustomTime).AsSeconds();  // explicit cast to see method
 
-            return EvaluateExpression(arg, op, arg);
+            // return the evaluated expression
+            return EvaluateExpression(prop, op, arg);
         }
 
         private static string GetPropName(string filter)
