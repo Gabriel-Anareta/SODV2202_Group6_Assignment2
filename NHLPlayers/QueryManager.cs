@@ -13,20 +13,12 @@ namespace NHLPlayers
 {
     public static class QueryManager
     {
-        public static bool RunFilters(this Player player, MatchCollection rawfilters)
+        public static bool RunFilters(this Player player, MatchCollection filters)
         {
-            for (int i = 0; i < rawfilters.Count; i++)
-            {
-                // set current filter
-                string filter = rawfilters[i].Value;
-
-                // run expression
-                bool expressionResult = RunExpression(filter, player);
-
-                // check state
-                if (!expressionResult)
+            // Check player on all filters
+            for (int i = 0; i < filters.Count; i++)
+                if (!RunExpression(filters[i].Value, player))
                     return false;
-            }
 
             return true;
         }
