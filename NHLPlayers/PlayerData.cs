@@ -33,7 +33,7 @@ namespace NHLPlayers
                                 continue;
 
                             Match teams = ExpressionManager.GetTeam(line);
-                            List<string> cells = CustomSplit(line, teams.Value);
+                            List<string> cells = line.CustomSplit(teams.Value);
                             Player set = new Player(cells);
 
                             data.Add(new Player(cells));
@@ -53,7 +53,7 @@ namespace NHLPlayers
             return data;
         }
 
-        private static List<string> CustomSplit(string line, string teams)
+        private static List<string> CustomSplit(this string line, string teams)
         {
             List<string> split = new List<string>();
             int index = -1;

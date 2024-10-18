@@ -33,8 +33,10 @@ namespace NHLPlayers
                     return "SOG";
                 case "S%":
                     return "S_Perc";
+                case "Time":
                 case "TOI/GP":
                     return "TOI_GP";
+                case "Shifts":
                 case "Shifts/GP":
                     return "Shifts_GP";
                 case "FOW%":

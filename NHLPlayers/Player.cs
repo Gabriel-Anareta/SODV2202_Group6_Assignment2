@@ -32,6 +32,17 @@ namespace NHLPlayers
             PropertyInfo[] props = this.GetType().GetProperties();
 
             for (int i = 0; i < props.Length; i++)
+                SetValue(props[i], data[i]);
+        }
+
+        public Player()
+        {
+            PropertyInfo[] props = this.GetType().GetProperties();
+            List<string> data = new List<string>();
+            for (int i = 0; i < 21; i++)
+                data.Add("0");
+
+            for (int i = 0; i < props.Length; i++)
             {
                 SetValue(props[i], data[i]);
             }
@@ -65,12 +76,9 @@ namespace NHLPlayers
             if (propType == typeof(List<string>))
             {
                 List<string> teams = data.Split(',').ToList();
-
                 for (int i = 0; i < teams.Count; i++)
-                {
                     teams[i] = teams[i].Trim();
-                }
-
+                teams.Sort();
                 prop.SetValue(this, teams);
                 return;
             }
