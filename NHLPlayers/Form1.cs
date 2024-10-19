@@ -7,15 +7,8 @@ namespace NHLPlayers
 {
     public partial class Form1 : Form
     {
-        public List<Player> players = PlayerData.AllData;
-
-        public Form1()
-        {
-            InitializeComponent();
-
-            List<Player> list = Test(player => player.FOW_Perc > 40).ToList();
-
-            label1.Text = "GP > 60, Team == ANA";
+        private List<Player> QueryResults;
+        /*label1.Text = "GP > 60, Team == ANA";
 
             string toShow = "";
             MatchCollection matches = label1.Text.AsExpressions();
@@ -28,19 +21,19 @@ namespace NHLPlayers
                 toShow += $"{player.Name}\n";
             }
 
-            label2.Text = toShow;
+            label2.Text = toShow;*/
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            dtGV_results.DataSource = PlayerData.AllData;
         }
 
-        /*public delegate bool Callback(Player player);*/
-
-        public IEnumerable<Player> Test(Func<Player, bool> callback)
+        private void btn_update_Click(object sender, EventArgs e)
         {
-            IEnumerable<Player> test = players.Where(player => callback(player));
-            /*from player in players
-            where testCallback(player)
-            select player;*/
-
-            return test;
+            QueryResults = PlayerData.AllData.Where(player => player.GP > 60).ToList();
+            dtGV_results.DataSource = QueryResults;
         }
     }
 }

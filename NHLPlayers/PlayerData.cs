@@ -6,7 +6,7 @@ namespace NHLPlayers
 {
     static public class PlayerData
     {
-        static public List<Player> AllData = GetData(@"NHL Player Stats 2017-18.csv");
+        static public readonly List<Player> AllData = GetData(@"NHL Player Stats 2017-18.csv");
 
         static public List<Player> GetData(string path)
         {

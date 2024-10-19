@@ -28,44 +28,92 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new Label();
-            label2 = new Label();
+            dtGV_results = new DataGridView();
+            tb_filter = new TextBox();
+            tb_order = new TextBox();
+            lbl_filters = new Label();
+            lbl_sort = new Label();
+            btn_update = new Button();
+            ((System.ComponentModel.ISupportInitialize)dtGV_results).BeginInit();
             SuspendLayout();
             // 
-            // label1
+            // dtGV_results
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(32, 9);
-            label1.Name = "label1";
-            label1.Size = new Size(50, 20);
-            label1.TabIndex = 0;
-            label1.Text = "label1";
+            dtGV_results.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dtGV_results.Dock = DockStyle.Bottom;
+            dtGV_results.Location = new Point(0, 64);
+            dtGV_results.Name = "dtGV_results";
+            dtGV_results.RowHeadersWidth = 51;
+            dtGV_results.Size = new Size(800, 386);
+            dtGV_results.TabIndex = 0;
             // 
-            // label2
+            // tb_filter
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(32, 47);
-            label2.Name = "label2";
-            label2.Size = new Size(50, 20);
-            label2.TabIndex = 1;
-            label2.Text = "label2";
+            tb_filter.Location = new Point(-1, 38);
+            tb_filter.Name = "tb_filter";
+            tb_filter.Size = new Size(235, 27);
+            tb_filter.TabIndex = 1;
+            // 
+            // tb_order
+            // 
+            tb_order.Location = new Point(281, 38);
+            tb_order.Name = "tb_order";
+            tb_order.Size = new Size(235, 27);
+            tb_order.TabIndex = 2;
+            // 
+            // lbl_filters
+            // 
+            lbl_filters.AutoSize = true;
+            lbl_filters.Location = new Point(-1, 15);
+            lbl_filters.Name = "lbl_filters";
+            lbl_filters.Size = new Size(48, 20);
+            lbl_filters.TabIndex = 3;
+            lbl_filters.Text = "Filters";
+            // 
+            // lbl_sort
+            // 
+            lbl_sort.AutoSize = true;
+            lbl_sort.Location = new Point(281, 15);
+            lbl_sort.Name = "lbl_sort";
+            lbl_sort.Size = new Size(36, 20);
+            lbl_sort.TabIndex = 4;
+            lbl_sort.Text = "Sort";
+            // 
+            // btn_update
+            // 
+            btn_update.Location = new Point(660, 15);
+            btn_update.Name = "btn_update";
+            btn_update.Size = new Size(94, 29);
+            btn_update.TabIndex = 5;
+            btn_update.Text = "Update";
+            btn_update.UseVisualStyleBackColor = true;
+            btn_update.Click += btn_update_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(btn_update);
+            Controls.Add(lbl_sort);
+            Controls.Add(lbl_filters);
+            Controls.Add(tb_order);
+            Controls.Add(tb_filter);
+            Controls.Add(dtGV_results);
             Name = "Form1";
             Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)dtGV_results).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private Label label1;
-        private Label label2;
+        private DataGridView dtGV_results;
+        private TextBox tb_filter;
+        private TextBox tb_order;
+        private Label lbl_filters;
+        private Label lbl_sort;
+        private Button btn_update;
     }
 }
