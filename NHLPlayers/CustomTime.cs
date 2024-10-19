@@ -25,7 +25,19 @@ namespace NHLPlayers
 
         public override string ToString()
         {
-            return $"{Minutes}:{Seconds}";
+            string secondsAsString = intToString(Seconds);
+            string minutesAsString = intToString(Minutes);
+
+            return $"{minutesAsString}:{secondsAsString}";
+        }
+
+        private string intToString(int value)
+        {
+            string valueString = value.ToString();
+            if (value < 10)
+                valueString = "0" + valueString;
+
+            return valueString;
         }
     }
 }

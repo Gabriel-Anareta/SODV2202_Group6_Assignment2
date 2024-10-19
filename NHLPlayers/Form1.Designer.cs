@@ -53,6 +53,7 @@
             tb_filter.Name = "tb_filter";
             tb_filter.Size = new Size(235, 27);
             tb_filter.TabIndex = 1;
+            tb_filter.KeyDown += tb_OnEnter;
             // 
             // tb_order
             // 
@@ -60,6 +61,7 @@
             tb_order.Name = "tb_order";
             tb_order.Size = new Size(235, 27);
             tb_order.TabIndex = 2;
+            tb_order.KeyDown += tb_OnEnter;
             // 
             // lbl_filters
             // 

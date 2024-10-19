@@ -7,33 +7,70 @@ namespace NHLPlayers
 {
     public partial class Form1 : Form
     {
-        private List<Player> QueryResults;
-        /*label1.Text = "GP > 60, Team == ANA";
-
-            string toShow = "";
-            MatchCollection matches = label1.Text.AsExpressions();
-            IEnumerable<Player> result = players.Where(player => player.RunFilters(matches));
-
-            toShow = $"Total count: {result.Count()}\n";
-
-            foreach (Player player in result.Take<Player>(20))
-            {
-                toShow += $"{player.Name}\n";
-            }
-
-            label2.Text = toShow;*/
-
         public Form1()
         {
             InitializeComponent();
-
-            dtGV_results.DataSource = PlayerData.AllData;
+            /*dtGV_results.AutoGenerateColumns = false;*/
+            UpdateDataSource();
         }
 
         private void btn_update_Click(object sender, EventArgs e)
         {
-            QueryResults = PlayerData.AllData.Where(player => player.GP > 60).ToList();
-            dtGV_results.DataSource = QueryResults;
+            UpdateDataSource();
+        }
+
+        private void tb_OnEnter(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                UpdateDataSource();
+                this.ActiveControl = null;
+            }
+        }
+
+        private void UpdateDataSource()
+        {
+            MatchCollection filterMatches = tb_filter.Text.AsExpressions();
+            MatchCollection orderMatches = tb_order.Text.AsOrders();
+            dtGV_results.DataSource = PlayerData.AllData
+                .Where(player => player.RunFilters(filterMatches))
+                .RunOrders(orderMatches)
+                .Select(player =>
+                {
+                    string value = "";
+                    var list = player.Team;
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        value += list[i];
+                        if (i + 1 != list.Count)
+                            value += ", ";
+                    }
+                    return new
+                    {
+                        Name = player.Name,
+                        Team = value,
+                        Pos = player.Pos,
+                        GP = player.GP,
+                        G = player.G,
+                        A = player.A,
+                        PTS = player.PTS,
+                        Plus_Minus = player.Plus_Minus,
+                        PIM = player.PIM,
+                        P_GP = player.P_GP,
+                        PPG = player.PPG,
+                        PPP = player.PPP,
+                        SHG = player.SHG,
+                        SHP = player.SHP,
+                        GWG = player.GWG,
+                        OTG = player.OTG,
+                        SOG = player.SOG,
+                        S_Perc = player.S_Perc,
+                        TOI_GP = player.TOI_GP.ToString(),
+                        Shifts_GP = player.Shifts_GP,
+                        FOW_Perc = player.FOW_Perc
+                    };
+                })
+                .ToList();
         }
     }
 }
