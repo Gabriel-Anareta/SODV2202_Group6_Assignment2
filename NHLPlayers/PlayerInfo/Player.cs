@@ -30,8 +30,9 @@ namespace NHLPlayers.PlayerInfo
         public Player(List<string> data)
         {
             // setting player properties using reflection
-            PropertyInfo[] props = GetType().GetProperties();
+            PropertyInfo[] props = this.GetType().GetProperties();
 
+            // for each property, set respective value from data
             for (int i = 0; i < props.Length; i++)
                 props[i].SetValue(this, DataValue(props[i], data[i]));
         }
@@ -87,7 +88,7 @@ namespace NHLPlayers.PlayerInfo
         public override string ToString()
         {
             string propsString = "";
-            PropertyInfo[] props = GetType().GetProperties();
+            PropertyInfo[] props = this.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
             {
                 string name = PropManager.MapPlayerProp(prop.Name);

@@ -35,10 +35,13 @@ namespace NHLPlayers
         {
             MatchCollection filterMatches = tb_filter.Text.AsExpressions();
             MatchCollection orderMatches = tb_order.Text.AsOrders();
-            dtGV_results.DataSource = PlayerData.AllData
+            var res = PlayerData.AllData
                 .Where(player => player.RunFilters(filterMatches))
                 .RunOrders(orderMatches)
                 .ToList();
+
+            dtGV_results.DataSource = res;
+            lbl_ResultCount.Text = $"Result Count: {res.Count}";
         }
     }
 }

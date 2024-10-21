@@ -34,6 +34,7 @@
             lbl_filters = new Label();
             lbl_sort = new Label();
             btn_update = new Button();
+            lbl_ResultCount = new Label();
             ((System.ComponentModel.ISupportInitialize)dtGV_results).BeginInit();
             SuspendLayout();
             // 
@@ -60,7 +61,7 @@
             // 
             // tb_order
             // 
-            tb_order.Location = new Point(281, 38);
+            tb_order.Location = new Point(249, 38);
             tb_order.Name = "tb_order";
             tb_order.Size = new Size(235, 27);
             tb_order.TabIndex = 2;
@@ -78,7 +79,7 @@
             // lbl_sort
             // 
             lbl_sort.AutoSize = true;
-            lbl_sort.Location = new Point(281, 15);
+            lbl_sort.Location = new Point(249, 15);
             lbl_sort.Name = "lbl_sort";
             lbl_sort.Size = new Size(36, 20);
             lbl_sort.TabIndex = 4;
@@ -94,11 +95,21 @@
             btn_update.UseVisualStyleBackColor = true;
             btn_update.Click += btn_update_Click;
             // 
+            // lbl_ResultCount
+            // 
+            lbl_ResultCount.AutoSize = true;
+            lbl_ResultCount.Location = new Point(493, 15);
+            lbl_ResultCount.Name = "lbl_ResultCount";
+            lbl_ResultCount.Size = new Size(92, 20);
+            lbl_ResultCount.TabIndex = 6;
+            lbl_ResultCount.Text = "Result Count";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(lbl_ResultCount);
             Controls.Add(btn_update);
             Controls.Add(lbl_sort);
             Controls.Add(lbl_filters);
@@ -120,5 +131,6 @@
         private Label lbl_filters;
         private Label lbl_sort;
         private Button btn_update;
+        private Label lbl_ResultCount;
     }
 }
