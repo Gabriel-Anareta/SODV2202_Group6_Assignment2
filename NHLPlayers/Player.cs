@@ -5,7 +5,7 @@ namespace NHLPlayers
     public class Player
     {
         public string Name { get; set; }
-        public List<string> Team { get; set; }
+        public string Team { get; set; }
         public string Pos { get; set; }
         public int GP { get; set; }
         public int G { get; set; }
@@ -51,10 +51,15 @@ namespace NHLPlayers
             }
 
             if (propType == typeof(string))
-                return data;
+            {
+                if (prop.Name == "Team")
+                    return SortedTeams(data);
+                else
+                    return data;
+            }
 
-            if (propType == typeof(List<string>))
-                return TeamList(data);
+            /*if (propType == typeof(List<string>))
+                return TeamList(data);*/
 
             if (propType == typeof(CustomTime))
                 return new CustomTime(data);
@@ -62,16 +67,23 @@ namespace NHLPlayers
             return Convert.ChangeType(null, propType);
         }
 
-        private List<string> TeamList(string data)
+        private string SortedTeams(string data)
         {
-            List<string> teams = data.Split(',').ToList();
+            List<string> teamsList = new List<string>();
+            foreach (string item in data.Split(','))
+                teamsList.Add(item.Trim());
 
-            for (int i = 0; i < teams.Count; i++)
-                teams[i] = teams[i].Trim();
+            teamsList.Sort();
 
-            teams.Sort();
+            string teamsString = "";
+            for (int i = 0; i < teamsList.Count; i++)
+            {
+                teamsString += teamsList[i];
+                if (i + 1 != teamsList.Count)
+                    teamsString += ", ";
+            }
 
-            return teams;
+            return teamsString;
         }
 
         public override string ToString()
@@ -81,7 +93,7 @@ namespace NHLPlayers
             foreach (PropertyInfo prop in props)
             {
                 string name = PropManager.MapPlayerProp(prop.Name);
-                if (name == "Team")
+                /*if (name == "Team")
                 {
                     string value = "";
                     var list = prop.GetValue(this) as List<string>;
@@ -96,7 +108,8 @@ namespace NHLPlayers
                 else
                 {
                     propsString += $"{name}: {prop.GetValue(this)}\n";
-                }
+                }*/
+                propsString += $"{name}: {prop.GetValue(this)}\n";
             }
 
             return propsString;

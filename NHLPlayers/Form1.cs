@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Linq.Expressions;
+using System.Numerics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -11,6 +13,7 @@ namespace NHLPlayers
         {
             InitializeComponent();
             /*dtGV_results.AutoGenerateColumns = false;*/
+            
             UpdateDataSource();
         }
 
@@ -35,7 +38,16 @@ namespace NHLPlayers
             dtGV_results.DataSource = PlayerData.AllData
                 .Where(player => player.RunFilters(filterMatches))
                 .RunOrders(orderMatches)
-                .Select(player =>
+                .ToList();
+
+            /*PropertyInfo[] props = typeof(Player).GetProperties();
+
+            for (int i = 0; i < props.Length; i++)
+                dtGV_results.Columns.Insert(i, CreateColumn(props[i].Name));*/
+        }
+
+        /*
+         * .Select(player =>
                 {
                     string value = "";
                     var list = player.Team;
@@ -71,6 +83,41 @@ namespace NHLPlayers
                     };
                 })
                 .ToList();
+         */
+
+        private DataGridViewColumn CreateColumn(string colName)
+        {
+            /*if (!QueryManager.ValidProp(propName, typeof(Player)))
+            {
+                // handle in valid prop
+            }
+
+            dynamic? propTemp = PropManager.GetPropValue(player, propName);
+            dynamic? prop;
+            if (propTemp is List<string>)
+                prop = HandleList(propTemp);
+            else
+                prop = propTemp;*/
+
+            DataGridViewColumn column = new DataGridViewColumn();
+            column.Name = colName;
+            DataGridViewCell cell = new DataGridViewTextBoxCell();
+            /*cell.Value = prop;*/
+            column.CellTemplate = cell;
+
+            return column;
+        }
+
+        private string HandleList(List<string> list)
+        {
+            string value = "";
+            for (int i = 0; i < list.Count; i++)
+            {
+                value += list[i];
+                if (i + 1 != list.Count)
+                    value += ", ";
+            }
+            return value;
         }
     }
 }

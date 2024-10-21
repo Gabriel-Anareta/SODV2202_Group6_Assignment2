@@ -6,8 +6,6 @@ using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static System.Windows.Forms.AxHost;
 
 namespace NHLPlayers
 {
@@ -43,26 +41,27 @@ namespace NHLPlayers
 
         private static bool RunExpression(string filter, Player player)
         {
-            // get property
+            // get property Name
             string propName = GetPropName(filter);
 
             // check property
             if (!ValidProp(propName, typeof(Player)))
                 return true;
 
-            dynamic? prop = PropManager.GetPropValue(player, propName);
-
+            // get property value
+            dynamic? propTemp = player.GetPropValue(propName);
+            
             // get operation
             string op = filter.AsOperation().Value;
 
             // ignore < > operations of string or null values
-            if (IllogicalComparison(prop, op))
+            if (IllogicalComparison(propTemp, op))
                 return true;
 
             // get argument as string
             string argString = filter.AsArgument().Value.Trim();
 
-            Type propType = prop.GetType();
+            Type propType = propTemp.GetType();
 
             // check expression on prop value
             if (!argString.CanCast(propType))
@@ -71,14 +70,17 @@ namespace NHLPlayers
             // set argument value
             dynamic? arg = argString.CastTo(propType);
 
-            if (prop is CustomTime)
-                prop = (prop as CustomTime).AsSeconds();  // explicit cast to see method
+            dynamic? prop;
+            if (propTemp is CustomTime)
+                prop = (propTemp as CustomTime).AsSeconds();  // explicit cast to see method
+            else
+                prop = propTemp;
 
             // return the evaluated expression
             return EvaluateExpression(prop, op, arg);
         }
 
-        private static string GetPropName(string filter)
+        public static string GetPropName(string filter)
         {
             string propName = filter.AsProperty().Value;
             propName = PropManager.MapPlayerProp(propName);
@@ -86,7 +88,7 @@ namespace NHLPlayers
             return propName;
         }
 
-        private static bool ValidProp(string propName, Type type)
+        public static bool ValidProp(string propName, Type type)
         {
             PropertyInfo? prop = type.GetProperty(propName);
 
@@ -94,6 +96,17 @@ namespace NHLPlayers
                 return false;
 
             return true;
+        }
+
+        public static dynamic GetPropValue(this Player player, string propName)
+        {
+            dynamic? prop = PropManager.GetPropValue(player, propName);
+
+            if (prop is string)
+                if ((prop as string).Contains(','))
+                    return AsTeamList(prop);
+
+            return prop;
         }
 
         private static bool IllogicalComparison(dynamic prop, string op)
@@ -149,6 +162,14 @@ namespace NHLPlayers
             }
 
             return value;
+        }
+
+        private static List<string> AsTeamList(string value)
+        {
+            List<string> teamList = new List<string>();
+            foreach (string item in value.Split(','))
+                teamList.Add(item.Trim());
+            return teamList;
         }
 
         private static bool EvaluateExpression(dynamic prop, string op, dynamic arg)
@@ -209,9 +230,6 @@ namespace NHLPlayers
         private static dynamic SelectOrder(this Player player, string propName)
         {
             var orderByValue = player.GetType().GetProperty(propName).GetValue(player);
-
-            if (orderByValue is List<string>)
-                return (orderByValue as List<string>).First();
 
             if (orderByValue is CustomTime)
                 return (orderByValue as CustomTime).AsSeconds();
