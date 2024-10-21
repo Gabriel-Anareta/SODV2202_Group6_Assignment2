@@ -4,6 +4,8 @@ using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using NHLPlayers.Managers;
+using NHLPlayers.PlayerInfo;
 
 namespace NHLPlayers
 {

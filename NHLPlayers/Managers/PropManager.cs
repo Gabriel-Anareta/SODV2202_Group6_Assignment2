@@ -5,14 +5,14 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NHLPlayers
+namespace NHLPlayers.Managers
 {
     public static class PropManager
     {
-        public static dynamic? GetPropValue(Object obj, string prop)
+        public static dynamic? GetPropValue(object obj, string prop)
         {
             Type type = obj.GetType();
-            
+
             if (type.GetProperty(prop) == null)
                 return "invalid property";
 

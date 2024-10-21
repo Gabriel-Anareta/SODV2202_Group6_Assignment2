@@ -6,8 +6,9 @@ using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using NHLPlayers.PlayerInfo;
 
-namespace NHLPlayers
+namespace NHLPlayers.Managers
 {
     public static class QueryManager
     {
@@ -50,7 +51,10 @@ namespace NHLPlayers
 
             // get property value
             dynamic? propTemp = player.GetPropValue(propName);
-            
+
+            // get property type
+            Type propType = typeof(Player).GetProperty(propName).PropertyType;
+
             // get operation
             string op = filter.AsOperation().Value;
 
@@ -60,8 +64,6 @@ namespace NHLPlayers
 
             // get argument as string
             string argString = filter.AsArgument().Value.Trim();
-
-            Type propType = propTemp.GetType();
 
             // check expression on prop value
             if (!argString.CanCast(propType))
@@ -148,7 +150,7 @@ namespace NHLPlayers
         private static dynamic? CastTo(this string value, Type type)
         {
             if (type == typeof(CustomTime))
-                return (new CustomTime(value)).AsSeconds();
+                return new CustomTime(value).AsSeconds();
 
             if (type == typeof(int))
                 return int.Parse(value);
@@ -156,7 +158,7 @@ namespace NHLPlayers
             if (type == typeof(double) || type == typeof(double?))
             {
                 if (value == "null")
-                    return (null as double?);
+                    return null as double?;
                 else
                     return double.Parse(value);
             }

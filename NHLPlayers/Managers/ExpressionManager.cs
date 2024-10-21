@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace NHLPlayers
+namespace NHLPlayers.Managers
 {
     public static class ExpressionManager
     {

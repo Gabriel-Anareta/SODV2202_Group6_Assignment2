@@ -1,13 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using NHLPlayers.Managers;
 
-namespace NHLPlayers
+namespace NHLPlayers.PlayerInfo
 {
     static public class PlayerData
     {
-        static public readonly List<Player> AllData = GetData(@"NHL Player Stats 2017-18.csv");
+        static public readonly List<Player> AllData = GetData(@"Data/NHL Player Stats 2017-18.csv");
 
         static public List<Player> GetData(string path)
         {

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
+using NHLPlayers.Managers;
 
-namespace NHLPlayers
+namespace NHLPlayers.PlayerInfo
 {
     public class Player
     {
@@ -29,7 +30,7 @@ namespace NHLPlayers
         public Player(List<string> data)
         {
             // setting player properties using reflection
-            PropertyInfo[] props = this.GetType().GetProperties();
+            PropertyInfo[] props = GetType().GetProperties();
 
             for (int i = 0; i < props.Length; i++)
                 props[i].SetValue(this, DataValue(props[i], data[i]));
@@ -45,7 +46,7 @@ namespace NHLPlayers
             if (propType == typeof(double) || propType == typeof(double?))
             {
                 if (data == "--")
-                    return (null as double?);
+                    return null as double?;
                 else
                     return double.Parse(data);
             }
@@ -57,9 +58,6 @@ namespace NHLPlayers
                 else
                     return data;
             }
-
-            /*if (propType == typeof(List<string>))
-                return TeamList(data);*/
 
             if (propType == typeof(CustomTime))
                 return new CustomTime(data);
@@ -89,26 +87,10 @@ namespace NHLPlayers
         public override string ToString()
         {
             string propsString = "";
-            PropertyInfo[] props = this.GetType().GetProperties();
+            PropertyInfo[] props = GetType().GetProperties();
             foreach (PropertyInfo prop in props)
             {
                 string name = PropManager.MapPlayerProp(prop.Name);
-                /*if (name == "Team")
-                {
-                    string value = "";
-                    var list = prop.GetValue(this) as List<string>;
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        value += list[i];
-                        if (i + 1 != list.Count)
-                            value += ", ";
-                    }
-                    propsString += $"{name}: {value}\n";
-                }
-                else
-                {
-                    propsString += $"{name}: {prop.GetValue(this)}\n";
-                }*/
                 propsString += $"{name}: {prop.GetValue(this)}\n";
             }
 
