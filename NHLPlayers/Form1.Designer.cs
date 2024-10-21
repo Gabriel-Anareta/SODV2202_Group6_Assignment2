@@ -39,6 +39,9 @@
             // 
             // dtGV_results
             // 
+            dtGV_results.AllowUserToAddRows = false;
+            dtGV_results.AllowUserToDeleteRows = false;
+            dtGV_results.AllowUserToOrderColumns = true;
             dtGV_results.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dtGV_results.Dock = DockStyle.Bottom;
             dtGV_results.Location = new Point(0, 64);
