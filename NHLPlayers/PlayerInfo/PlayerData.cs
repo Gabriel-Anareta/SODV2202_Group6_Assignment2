@@ -26,23 +26,6 @@ namespace NHLPlayers.PlayerInfo
             return data;
         }
 
-        private static List<string> GetFeilds(string path)
-        {
-            List<string> lineValues = new List<string>();
-
-            using (StreamReader reader = new StreamReader(path))
-            {
-                string? line = reader.ReadLine();
-
-                if (line == null)
-                    return lineValues;
-
-                lineValues = line.Split(',').ToList();
-            }
-
-            return lineValues;
-        }
-
         private static List<Player> ReadFile(string path)
         {
             List<Player> data = new List<Player>();

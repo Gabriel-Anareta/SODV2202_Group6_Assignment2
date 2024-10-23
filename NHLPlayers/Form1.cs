@@ -14,7 +14,8 @@ namespace NHLPlayers
         public Form1()
         {
             InitializeComponent();
-            UpdateDataSource();
+            dtGV_results.DataSource = PlayerData.AllData;
+            lbl_ResultCount.Text = $"Result Count: {PlayerData.AllData.Count}";
         }
 
         private void btn_update_Click(object sender, EventArgs e)

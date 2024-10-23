@@ -66,7 +66,7 @@ namespace NHLPlayers.PlayerInfo
             return Convert.ChangeType(null, propType);
         }
 
-        private string SortedTeams(string data)
+        private string SortedTeams(string data) // gets teams as a sorted string
         {
             List<string> teamsList = new List<string>();
             foreach (string item in data.Split(','))
