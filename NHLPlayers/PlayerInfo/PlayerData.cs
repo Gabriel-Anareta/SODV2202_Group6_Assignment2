@@ -11,23 +11,16 @@ namespace NHLPlayers.PlayerInfo
 
         static public List<Player> GetData(string path)
         {
-            List<Player> data = new List<Player>();
+            List<Player> data;
             string csvPath = Path.Combine(Environment.CurrentDirectory, path);
 
-            if (File.Exists(csvPath))
+            try
             {
-                try
-                {
-                    data = ReadFile(csvPath);
-                }
-                catch (Exception e)
-                {
-                    // Catch error in reading file -- Place code here to display an error message
-                }
+                data = ReadFile(csvPath);
             }
-            else
+            catch (Exception e)
             {
-                // Catch exception in invalid file path -- Place code here to display an error message
+                data = new List<Player>();
             }
 
             return data;
